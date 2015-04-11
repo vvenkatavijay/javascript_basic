@@ -1,0 +1,99 @@
+<script type="text/javascript">
+function Node(val) {
+	this.value = val;
+	this.parent = undefined;
+	this.child = undefined;
+}
+
+function DoublyLinkedNode(first_val) {
+	this.head = new Node(first_val);
+	this.tail = this.head;
+
+	this.addNode = function(x) {
+		var node = new Node(x);
+		node.parent = this.tail;
+		node.child = undefined;
+		this.tail.child = node;
+		this.tail = node;
+	}
+
+	this.displayContents = function() {
+		var iter = this.head;
+
+		while(iter != undefined) {
+			console.log(iter.value);
+			iter = iter.child;
+		}
+	}
+
+	this.remove = function(num) {
+		var iter = this.head;
+		var count = 1;
+
+		while(iter != undefined && count < num) {
+			iter = iter.child;
+			count++;
+		}
+
+		if(iter.child != undefined && iter.parent != undefined) {
+			iter.child.parent = iter.parent;
+			iter.parent.child = iter.child;
+		} else if(iter.child == undefined && iter.parent != undefined) {
+			iter.parent.child = undefined;
+			this.tail = iter.parent;
+		} else if(iter.child != undefined && iter.parent == undefined) {
+			iter.child.parent = undefined;
+			this.head = iter.child;
+		} else {
+			this.head = undefined;
+			this.tail = undefined;
+		}
+
+	}
+
+	this.insert = function(pos, value) {
+		var node = new Node(value);
+		var iter = this.head;
+		var count = 1;
+
+		while(iter != undefined && count < pos) {
+			iter = iter.child;
+			count++;
+		}
+
+		if(iter != undefined && iter.parent != undefined) {
+
+			var node_parent = iter.parent;
+
+			iter.parent = node;
+			node.child = iter;
+
+			node_parent.child = node;
+			node.parent = node_parent;
+		} else if(iter != undefined && iter.parent == undefined) {
+			node.child = this.head;
+			this.head.parent = node;
+			this.head = node;
+		} else if(iter == undefined) {
+			this.tail.child = node;
+			node.parent = this.tail;
+			this.tail = node;
+		}
+
+	}
+}
+
+var list = new DoublyLinkedNode(5);
+
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
+list.addNode(4);
+list.displayContents();
+//insert test
+list.insert(6,'test');
+list.displayContents();
+// remove test
+list.remove(6);
+list.displayContents();
+</script>
